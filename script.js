@@ -187,3 +187,122 @@ cookieSettings?.addEventListener('click', () => {
   localStorage.removeItem('alexads-cookie-consent');
   showCookieBanner();
 });
+
+// ===============================
+// Cookie consent + Meta Pixel
+// ===============================
+
+const META_PIXEL_ID = '1173447194947353';
+const COOKIE_CONSENT_KEY = 'alexads_cookie_consent';
+
+let metaPixelLoaded = false;
+
+function loadMetaPixel() {
+  if (metaPixelLoaded || window.fbq) return;
+
+  /* Meta Pixel base code */
+  !(function (f, b, e, v, n, t, s) {
+    if (f.fbq) return;
+    n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n;
+    n.push = n;
+    n.loaded = true;
+    n.version = '2.0';
+    n.queue = [];
+    t = b.createElement(e);
+    t.async = true;
+    t.src = v;
+    s = b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t, s);
+  })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+
+  metaPixelLoaded = true;
+
+  // trackLeadOnThankYouPage();
+}
+
+function acceptCookies() {
+  localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+  hideCookieBanner();
+  loadMetaPixel();
+}
+
+function rejectCookies() {
+  localStorage.setItem(COOKIE_CONSENT_KEY, 'rejected');
+  hideCookieBanner();
+}
+
+function hideCookieBanner() {
+  const banner = document.getElementById('cookieBanner');
+  if (banner) banner.hidden = true;
+}
+
+function showCookieBanner() {
+  const banner = document.getElementById('cookieBanner');
+  if (banner) banner.hidden = false;
+}
+
+function getCookieConsent() {
+  return localStorage.getItem(COOKIE_CONSENT_KEY);
+}
+
+function resetCookieConsent() {
+  localStorage.removeItem(COOKIE_CONSENT_KEY);
+  window.location.reload();
+}
+
+function trackMetaEvent(eventName, params = {}, options = {}) {
+  if (!metaPixelLoaded || typeof fbq !== 'function') return;
+
+  if (options.eventID) {
+    fbq('track', eventName, params, { eventID: options.eventID });
+  } else {
+    fbq('track', eventName, params);
+  }
+}
+
+function createEventId(prefix) {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+}
+
+function trackLeadOnThankYouPage() {
+  const isThankYouPage = window.location.pathname.includes('thank-you');
+  if (!isThankYouPage) return;
+
+  const leadTrackedKey = 'alexads_lead_tracked';
+  if (sessionStorage.getItem(leadTrackedKey)) return;
+
+  const eventID = createEventId('lead');
+
+  trackMetaEvent('Lead', {}, { eventID });
+  sessionStorage.setItem(leadTrackedKey, eventID);
+}
+
+function initCookieConsent() {
+  const consent = getCookieConsent();
+
+  if (consent === 'accepted') {
+    loadMetaPixel();
+  } else if (consent === 'rejected') {
+    hideCookieBanner();
+  } else {
+    showCookieBanner();
+  }
+
+  const acceptBtn = document.getElementById('cookieAccept');
+  const rejectBtn = document.getElementById('cookieReject');
+
+  if (acceptBtn) acceptBtn.addEventListener('click', acceptCookies);
+  if (rejectBtn) rejectBtn.addEventListener('click', rejectCookies);
+}
+
+initCookieConsent();
+
+// Для тестов в консоли браузера:
+// resetCookieConsent()
+window.resetCookieConsent = resetCookieConsent;

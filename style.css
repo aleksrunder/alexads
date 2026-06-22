@@ -222,3 +222,137 @@ h3 { font-size: 1.18rem; letter-spacing: -0.02em; margin-bottom: 10px; }
 .legal-wrap p { color: #3d463c; }
 .legal-note { padding: 18px; border-left: 4px solid var(--sand); background: rgba(216,192,149,.24); border-radius: 14px; }
 .back-link { display: inline-flex; padding: 10px 14px; border-radius: 999px; background: var(--green-900); color: var(--white); font-weight: 800; }
+
+.cookie-banner {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+  border: 1px solid rgba(236, 210, 151, 0.24);
+  border-radius: 24px;
+  background: rgba(6, 20, 15, 0.96);
+  color: #fff8ea;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(16px);
+}
+
+.cookie-banner[hidden] {
+  display: none;
+}
+
+.cookie-banner p {
+  margin: 6px 0 8px;
+  color: rgba(255, 248, 234, 0.76);
+}
+
+.cookie-banner a {
+  color: #f2c978;
+  margin-right: 14px;
+  font-size: 14px;
+}
+
+.cookie-banner__actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .cookie-banner {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cookie-banner__actions {
+    width: 100%;
+  }
+
+  .cookie-banner__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.thank-you-page {
+  min-height: 100vh;
+  padding: 32px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(236, 210, 151, 0.18), transparent 28%),
+    radial-gradient(circle at 80% 40%, rgba(66, 105, 78, 0.35), transparent 34%),
+    #06140f;
+  color: #fff8ea;
+}
+
+.thank-you-card {
+  width: min(760px, 100%);
+  padding: clamp(28px, 5vw, 56px);
+  border: 1px solid rgba(236, 210, 151, 0.22);
+  border-radius: 32px;
+  background: rgba(8, 24, 18, 0.88);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+}
+
+.thank-you-brand {
+  display: inline-flex;
+  margin-bottom: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.thank-you-card h1 {
+  max-width: 680px;
+  margin: 0;
+  font-size: clamp(42px, 7vw, 82px);
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+}
+
+.thank-you-text {
+  max-width: 620px;
+  margin: 28px 0 0;
+  color: rgba(255, 248, 234, 0.78);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.thank-you-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.thank-you-note {
+  margin: 28px 0 0;
+  color: rgba(255, 248, 234, 0.55);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .thank-you-page {
+    padding: 18px;
+  }
+
+  .thank-you-card {
+    border-radius: 24px;
+  }
+
+  .thank-you-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
