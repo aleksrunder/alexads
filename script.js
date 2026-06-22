@@ -241,6 +241,12 @@ function loadGA4() {
     debug_mode: true
   });
 
+  if (window.location.pathname.includes('thank-you.html')) {
+  gtag('event', 'generate_lead', {
+    method: 'thank_you_page'
+  });
+}
+
   ga4Loaded = true;
 }
 
