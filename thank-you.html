@@ -39,15 +39,26 @@
 
       <div class="thank-you-actions">
         <a class="btn btn-primary" href="index.html">Вернуться на сайт</a>
-        <a class="btn btn-secondary" href="https://t.me/your_username">Написать в Telegram</a>
+        <a class="btn btn-ghost" href="https://t.me/your_username" target="_blank" rel="noreferrer" data-meta-event="Contact">Написать в Telegram</a>
       </div>
 
       <p class="thank-you-note">
-        Если вы попали на эту страницу после отправки формы, на сайте может фиксироваться событие
-        <strong>Lead</strong> — только при согласии на cookies.
+        Для первого теста Meta будет видеть обычный PageView на этой странице. Позже можно будет
+        сделать отдельное событие Lead и Conversions API с дедупликацией.
       </p>
     </section>
   </main>
+
+  <div class="cookie-banner" id="cookieBanner" hidden>
+    <div>
+      <strong>Cookies и аналитика</strong>
+      <p>Сайт использует необходимые cookies для сохранения выбранного языка. Meta Pixel и рекламная аналитика запускаются только после вашего согласия.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn-cookie ghost" id="rejectCookies">Отклонить</button>
+      <button class="btn-cookie" id="acceptCookies">Принять</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

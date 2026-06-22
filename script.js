@@ -33,7 +33,7 @@ const translations = {
     footerText: 'Не является официальным партнёром Meta. Facebook, Instagram и Meta — товарные знаки их владельцев.',
     privacyLink: 'Политика приватности', cookiesLink: 'Cookies', cookieSettings: 'Настройки cookies',
     cookieTitle: 'Cookies и аналитика',
-    cookieText: 'Сейчас сайт использует только необходимые cookies для сохранения выбранного языка. Если позже будет добавлен Meta Pixel или аналитика, они должны запускаться только после вашего согласия.',
+    cookieText: 'Сайт использует необходимые cookies для сохранения выбранного языка. Meta Pixel и рекламная аналитика запускаются только после вашего согласия.',
     cookieReject: 'Отклонить', cookieAccept: 'Принять'
   },
   lv: {
@@ -70,7 +70,7 @@ const translations = {
     footerText: 'Nav oficiāls Meta partneris. Facebook, Instagram un Meta ir to īpašnieku preču zīmes.',
     privacyLink: 'Privātuma politika', cookiesLink: 'Sīkdatnes', cookieSettings: 'Sīkdatņu iestatījumi',
     cookieTitle: 'Sīkdatnes un analītika',
-    cookieText: 'Pašlaik vietne izmanto tikai nepieciešamo glabāšanu izvēlētās valodas saglabāšanai. Ja vēlāk tiks pievienots Meta Pixel vai analītika, tie jāpalaiž tikai pēc jūsu piekrišanas.',
+    cookieText: 'Vietne izmanto nepieciešamo glabāšanu izvēlētās valodas saglabāšanai. Meta Pixel un reklāmas analītika tiek palaista tikai pēc jūsu piekrišanas.',
     cookieReject: 'Noraidīt', cookieAccept: 'Pieņemt'
   },
   en: {
@@ -107,7 +107,7 @@ const translations = {
     footerText: 'Not an official Meta partner. Facebook, Instagram and Meta are trademarks of their respective owners.',
     privacyLink: 'Privacy policy', cookiesLink: 'Cookies', cookieSettings: 'Cookie settings',
     cookieTitle: 'Cookies and analytics',
-    cookieText: 'For now, this website uses only necessary storage to save the selected language. If Meta Pixel or analytics are added later, they should load only after your consent.',
+    cookieText: 'This website uses necessary storage to save the selected language. Meta Pixel and advertising analytics load only after your consent.',
     cookieReject: 'Reject', cookieAccept: 'Accept'
   }
 };
@@ -115,105 +115,100 @@ const translations = {
 const html = document.documentElement;
 const langButtons = document.querySelectorAll('.lang-btn');
 const translatable = document.querySelectorAll('[data-i18n]');
+const menuBtn = document.getElementById('menuBtn');
+const nav = document.getElementById('nav');
+const yearEl = document.getElementById('year');
+
+const META_PIXEL_ID = '1173447194947353';
+const COOKIE_CONSENT_KEY = 'alexads-cookie-consent';
+
+let metaPixelLoaded = false;
 
 function setLanguage(lang) {
   const safeLang = translations[lang] ? lang : 'ru';
+
   html.lang = safeLang;
+
   translatable.forEach((el) => {
     const key = el.dataset.i18n;
-    if (translations[safeLang] && translations[safeLang][key]) {
-      el.textContent = translations[safeLang][key];
+    const value = translations[safeLang]?.[key];
+
+    if (value) {
+      el.textContent = value;
     }
   });
-  langButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.lang === safeLang));
+
+  langButtons.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.lang === safeLang);
+  });
+
   localStorage.setItem('alexads-lang', safeLang);
 }
 
-langButtons.forEach((button) => button.addEventListener('click', () => setLanguage(button.dataset.lang)));
-const urlLang = new URLSearchParams(window.location.search).get('lang');
-setLanguage(urlLang || localStorage.getItem('alexads-lang') || 'ru');
-
-document.getElementById('year').textContent = new Date().getFullYear();
-
-const menuBtn = document.getElementById('menuBtn');
-const nav = document.getElementById('nav');
-menuBtn.addEventListener('click', () => nav.classList.toggle('open'));
-nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => nav.classList.remove('open')));
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) entry.target.classList.add('visible');
+function initLanguageSwitcher() {
+  langButtons.forEach((button) => {
+    button.addEventListener('click', () => setLanguage(button.dataset.lang));
   });
-}, { threshold: 0.12 });
 
-document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  const savedLang = localStorage.getItem('alexads-lang');
 
-// Cookie consent scaffold. Add Meta Pixel / analytics only inside loadMarketingScripts().
-const cookieBanner = document.getElementById('cookieBanner');
-const acceptCookies = document.getElementById('acceptCookies');
-const rejectCookies = document.getElementById('rejectCookies');
-const cookieSettings = document.getElementById('cookieSettings');
-
-function loadMarketingScripts() {
-  // Future example:
-  // 1) Paste Meta Pixel code here only after you update privacy/cookie pages.
-  // 2) Do not load tracking scripts before the visitor clicks "Accept".
+  setLanguage(urlLang || savedLang || 'ru');
 }
 
-function showCookieBanner() {
-  if (cookieBanner) cookieBanner.hidden = false;
+function initMobileMenu() {
+  if (!menuBtn || !nav) return;
+
+  menuBtn.addEventListener('click', () => {
+    nav.classList.toggle('open');
+  });
+
+  nav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => nav.classList.remove('open'));
+  });
 }
 
-function hideCookieBanner() {
-  if (cookieBanner) cookieBanner.hidden = true;
+function initRevealFallback() {
+  const revealItems = document.querySelectorAll('.reveal');
+
+  if (!('IntersectionObserver' in window)) {
+    revealItems.forEach((el) => el.classList.add('visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealItems.forEach((el) => observer.observe(el));
 }
-
-const cookieChoice = localStorage.getItem('alexads-cookie-consent');
-if (!cookieChoice) showCookieBanner();
-if (cookieChoice === 'accepted') loadMarketingScripts();
-
-acceptCookies?.addEventListener('click', () => {
-  localStorage.setItem('alexads-cookie-consent', 'accepted');
-  hideCookieBanner();
-  loadMarketingScripts();
-});
-
-rejectCookies?.addEventListener('click', () => {
-  localStorage.setItem('alexads-cookie-consent', 'rejected');
-  hideCookieBanner();
-});
-
-cookieSettings?.addEventListener('click', () => {
-  localStorage.removeItem('alexads-cookie-consent');
-  showCookieBanner();
-});
-
-// ===============================
-// Cookie consent + Meta Pixel
-// ===============================
-
-const META_PIXEL_ID = '1173447194947353';
-const COOKIE_CONSENT_KEY = 'alexads_cookie_consent';
-
-let metaPixelLoaded = false;
 
 function loadMetaPixel() {
   if (metaPixelLoaded || window.fbq) return;
 
-  /* Meta Pixel base code */
   !(function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
+
     n = f.fbq = function () {
       n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
     };
+
     if (!f._fbq) f._fbq = n;
+
     n.push = n;
     n.loaded = true;
     n.version = '2.0';
     n.queue = [];
+
     t = b.createElement(e);
     t.async = true;
     t.src = v;
+
     s = b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t, s);
   })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
@@ -222,24 +217,6 @@ function loadMetaPixel() {
   fbq('track', 'PageView');
 
   metaPixelLoaded = true;
-
-  // trackLeadOnThankYouPage();
-}
-
-function acceptCookies() {
-  localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
-  hideCookieBanner();
-  loadMetaPixel();
-}
-
-function rejectCookies() {
-  localStorage.setItem(COOKIE_CONSENT_KEY, 'rejected');
-  hideCookieBanner();
-}
-
-function hideCookieBanner() {
-  const banner = document.getElementById('cookieBanner');
-  if (banner) banner.hidden = true;
 }
 
 function showCookieBanner() {
@@ -247,46 +224,36 @@ function showCookieBanner() {
   if (banner) banner.hidden = false;
 }
 
-function getCookieConsent() {
-  return localStorage.getItem(COOKIE_CONSENT_KEY);
+function hideCookieBanner() {
+  const banner = document.getElementById('cookieBanner');
+  if (banner) banner.hidden = true;
+}
+
+function acceptCookieConsent() {
+  localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+  hideCookieBanner();
+  loadMetaPixel();
+}
+
+function rejectCookieConsent() {
+  localStorage.setItem(COOKIE_CONSENT_KEY, 'rejected');
+  hideCookieBanner();
 }
 
 function resetCookieConsent() {
   localStorage.removeItem(COOKIE_CONSENT_KEY);
+  localStorage.removeItem('alexads_cookie_consent');
   window.location.reload();
 }
 
-function trackMetaEvent(eventName, params = {}, options = {}) {
-  if (!metaPixelLoaded || typeof fbq !== 'function') return;
-
-  if (options.eventID) {
-    fbq('track', eventName, params, { eventID: options.eventID });
-  } else {
-    fbq('track', eventName, params);
-  }
-}
-
-function createEventId(prefix) {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-}
-
-function trackLeadOnThankYouPage() {
-  const isThankYouPage = window.location.pathname.includes('thank-you');
-  if (!isThankYouPage) return;
-
-  const leadTrackedKey = 'alexads_lead_tracked';
-  if (sessionStorage.getItem(leadTrackedKey)) return;
-
-  const eventID = createEventId('lead');
-
-  trackMetaEvent('Lead', {}, { eventID });
-  sessionStorage.setItem(leadTrackedKey, eventID);
-}
-
 function initCookieConsent() {
-  const consent = getCookieConsent();
+  const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+  const acceptBtn = document.getElementById('acceptCookies');
+  const rejectBtn = document.getElementById('rejectCookies');
+  const settingsBtn = document.getElementById('cookieSettings');
 
   if (consent === 'accepted') {
+    hideCookieBanner();
     loadMetaPixel();
   } else if (consent === 'rejected') {
     hideCookieBanner();
@@ -294,15 +261,35 @@ function initCookieConsent() {
     showCookieBanner();
   }
 
-  const acceptBtn = document.getElementById('cookieAccept');
-  const rejectBtn = document.getElementById('cookieReject');
+  if (acceptBtn) acceptBtn.addEventListener('click', acceptCookieConsent);
+  if (rejectBtn) rejectBtn.addEventListener('click', rejectCookieConsent);
 
-  if (acceptBtn) acceptBtn.addEventListener('click', acceptCookies);
-  if (rejectBtn) rejectBtn.addEventListener('click', rejectCookies);
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      localStorage.removeItem(COOKIE_CONSENT_KEY);
+      showCookieBanner();
+    });
+  }
 }
 
-initCookieConsent();
+function initContactTracking() {
+  document.querySelectorAll('[data-meta-event]').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (metaPixelLoaded && typeof fbq === 'function') {
+        fbq('track', link.dataset.metaEvent);
+      }
+    });
+  });
+}
 
-// Для тестов в консоли браузера:
-// resetCookieConsent()
+if (yearEl) {
+  yearEl.textContent = new Date().getFullYear();
+}
+
+initLanguageSwitcher();
+initMobileMenu();
+initRevealFallback();
+initCookieConsent();
+initContactTracking();
+
 window.resetCookieConsent = resetCookieConsent;
