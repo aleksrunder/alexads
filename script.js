@@ -113,6 +113,7 @@ const translations = {
 };
 
 const html = document.documentElement;
+const html = document.documentElement;
 const langButtons = document.querySelectorAll('.lang-btn');
 const translatable = document.querySelectorAll('[data-i18n]');
 const menuBtn = document.getElementById('menuBtn');
@@ -120,9 +121,11 @@ const nav = document.getElementById('nav');
 const yearEl = document.getElementById('year');
 
 const META_PIXEL_ID = '1173447194947353';
+const GA4_MEASUREMENT_ID = 'G-ESEH9LXC35';
 const COOKIE_CONSENT_KEY = 'alexads-cookie-consent';
 
 let metaPixelLoaded = false;
+let ga4Loaded = false;
 
 function setLanguage(lang) {
   const safeLang = translations[lang] ? lang : 'ru';
@@ -219,6 +222,34 @@ function loadMetaPixel() {
   metaPixelLoaded = true;
 }
 
+function loadGA4() {
+  if (ga4Loaded || window.gtag) return;
+
+  const gtagScript = document.createElement('script');
+  gtagScript.async = true;
+  gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`;
+  document.head.appendChild(gtagScript);
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () {
+    window.dataLayer.push(arguments);
+  };
+
+  gtag('js', new Date());
+
+  gtag('config', GA4_MEASUREMENT_ID, {
+    send_page_view: true,
+    debug_mode: true
+  });
+
+  ga4Loaded = true;
+}
+
+function loadMarketingScripts() {
+  loadMetaPixel();
+  loadGA4();
+}
+
 function showCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   if (banner) banner.hidden = false;
@@ -232,7 +263,7 @@ function hideCookieBanner() {
 function acceptCookieConsent() {
   localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
   hideCookieBanner();
-  loadMetaPixel();
+  loadMarketingScripts();
 }
 
 function rejectCookieConsent() {
@@ -254,15 +285,20 @@ function initCookieConsent() {
 
   if (consent === 'accepted') {
     hideCookieBanner();
-    loadMetaPixel();
+    loadMarketingScripts();
   } else if (consent === 'rejected') {
     hideCookieBanner();
   } else {
     showCookieBanner();
   }
 
-  if (acceptBtn) acceptBtn.addEventListener('click', acceptCookieConsent);
-  if (rejectBtn) rejectBtn.addEventListener('click', rejectCookieConsent);
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', acceptCookieConsent);
+  }
+
+  if (rejectBtn) {
+    rejectBtn.addEventListener('click', rejectCookieConsent);
+  }
 
   if (settingsBtn) {
     settingsBtn.addEventListener('click', () => {
@@ -277,6 +313,12 @@ function initContactTracking() {
     link.addEventListener('click', () => {
       if (metaPixelLoaded && typeof fbq === 'function') {
         fbq('track', link.dataset.metaEvent);
+      }
+
+      if (ga4Loaded && typeof gtag === 'function') {
+        gtag('event', 'contact_click', {
+          contact_type: link.dataset.contactType || 'unknown'
+        });
       }
     });
   });
