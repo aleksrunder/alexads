@@ -113,7 +113,6 @@ const translations = {
 };
 
 const html = document.documentElement;
-const html = document.documentElement;
 const langButtons = document.querySelectorAll('.lang-btn');
 const translatable = document.querySelectorAll('[data-i18n]');
 const menuBtn = document.getElementById('menuBtn');
