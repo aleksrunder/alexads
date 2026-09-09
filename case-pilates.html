@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pilates Studio — Alexads</title>
+  <meta name="description" content="Pilates Studio — рабочий кейс Alexads: landing page, аналитика и рекламная логика.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .case-page{background:var(--paper);min-height:100vh}
+    .case-hero{padding:70px clamp(22px,5vw,80px) 32px;max-width:var(--max);margin:auto}
+    .case-breadcrumb{font-size:11px;color:#7a746b;margin-bottom:34px}
+    .case-hero h1{font-family:var(--serif);font-size:clamp(60px,7vw,110px);line-height:.9;font-weight:400;letter-spacing:-.05em;margin:0}
+    .case-hero p{max-width:660px;color:#6d675e;margin:22px 0 0}
+    .case-banner{margin:0 clamp(22px,5vw,80px);height:min(55vw,610px);position:relative;overflow:hidden;background:linear-gradient(90deg,#d0c1a8,#8d7960)}
+    .case-banner:before{content:"";position:absolute;left:7%;top:0;width:40%;height:100%;background:linear-gradient(130deg,rgba(255,255,255,.72),rgba(255,255,255,0));clip-path:polygon(0 0,100% 0,42% 100%,0 100%)}
+    .case-banner .mat{position:absolute;left:23%;right:8%;height:8%;bottom:17%;background:#40382f;border-radius:50%}
+    .case-banner .person{position:absolute;width:58%;height:24%;left:30%;bottom:19%;background:#292924;border-radius:50% 40% 50% 20%;transform:rotate(-5deg)}
+    .case-banner .person:before{content:"";position:absolute;width:18%;aspect-ratio:1;right:-3%;top:-23%;border-radius:50%;background:#2c2924}
+    .case-banner .person:after{content:"";position:absolute;width:60%;height:18%;left:-35%;top:30%;background:#292924;border-radius:999px;transform:rotate(10deg)}
+    .case-banner-quote{position:absolute;right:4%;top:12%;font-family:var(--serif);font-size:clamp(24px,3vw,50px);font-style:italic;color:rgba(255,255,255,.88);max-width:300px}
+    .case-details{max-width:var(--max);margin:auto;padding:34px clamp(22px,5vw,80px) 90px;display:grid;grid-template-columns:.85fr 1.15fr 1fr;gap:0}
+    .case-col{padding:0 34px;border-left:1px solid var(--line)}
+    .case-col:first-child{padding-left:0;border-left:0}
+    .case-col h2{font-size:11px;text-transform:uppercase;letter-spacing:.18em;margin:0 0 16px}
+    .case-col p,.case-col li{font-size:13px;color:#645f57}
+    .case-col ul{list-style:none;padding:0;margin:0}
+    .case-col li{padding:6px 0 6px 20px;position:relative}
+    .case-col li:before{content:"✓";position:absolute;left:0;color:#7d684f}
+    .case-status-box{background:var(--white);padding:30px;margin-top:28px}
+    .case-status-box strong{font-family:var(--serif);font-size:28px;font-weight:400}
+    .back-row{max-width:var(--max);margin:auto;padding:0 clamp(22px,5vw,80px) 90px}
+    @media(max-width:780px){
+      .case-banner{height:430px;margin:0 20px}
+      .case-details{grid-template-columns:1fr;padding:30px 20px 70px}
+      .case-col{border-left:0;border-top:1px solid var(--line);padding:24px 0}
+      .case-col:first-child{border-top:0}
+      .back-row{padding:0 20px 70px}
+    }
+  </style>
+</head>
+<body class="case-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-name">ALEXADS</span>
+      <span class="brand-sub">DIGITAL MARKETING</span>
+    </a>
+    <nav class="site-nav" style="grid-column:2 / 4;justify-content:flex-end">
+      <a href="index.html#about">Обо мне</a><a href="index.html#services">Услуги</a>
+      <a href="index.html#process">Процесс</a><a href="index.html#cases">Кейсы</a><a href="index.html#contact">Контакты</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="case-hero">
+      <div class="case-breadcrumb"><a href="index.html#cases">Кейсы</a> / Pilates Studio</div>
+      <h1>Pilates Studio</h1>
+      <p>Рабочий проект для локальной студии: структура посадочной страницы, аналитика и рекламная логика. Финальные цифры добавим только после того, как их можно будет подтвердить.</p>
+    </section>
+
+    <div class="case-banner">
+      <div class="mat"></div><div class="person"></div>
+      <div class="case-banner-quote">Не громче.<br>Точнее.</div>
+    </div>
+
+    <section class="case-details">
+      <div class="case-col">
+        <h2>Задача</h2>
+        <p>Собрать более понятный путь для человека из рекламы до записи и подготовить основу для измерения результата.</p>
+      </div>
+      <div class="case-col">
+        <h2>Что сделано / в работе</h2>
+        <ul>
+          <li>Структура новой посадочной страницы</li>
+          <li>Логика оффера и ключевых блоков</li>
+          <li>План событий и базовой аналитики</li>
+          <li>Рекламная структура под Meta</li>
+          <li>Подготовка материалов для тестов</li>
+        </ul>
+      </div>
+      <div class="case-col">
+        <h2>Статус</h2>
+        <div class="case-status-box">
+          <strong>В работе</strong>
+          <p>Результаты и метрики появятся здесь после запуска и накопления достаточного количества данных.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="back-row">
+      <a class="button button-dark" href="index.html#cases"><span>← Назад к проектам</span></a>
+    </div>
+  </main>
+</body>
+</html>
